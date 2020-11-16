@@ -30,7 +30,7 @@ void out_array(int* x, int n) {
 void sort_array_select(int* x, const int n) {
     std::cout << "\nСортировка выбором" << endl;
     int min, temp;
-    unsigned long comparisions = 0, movements = 0;
+    unsigned long long comparisions = 0, movements = 0;
     
     for (int i = 0; i < n - 1; i++) {
         min = i;
@@ -60,10 +60,11 @@ void sort_array_select(int* x, const int n) {
 void sort_array_insert(int* x, const int n) {
     std::cout << "\nСортировка вставками" << endl;
     int i, key, j;
-    unsigned long comparisions = 0, movements = 0;
+    unsigned long long comparisions = 0, movements = 0;
     for (i = 1; i < n; i++)
     {
         key = x[i];
+        movements++;
         j = i - 1;
 
         while (j >= 0 && x[j] > key)
@@ -74,6 +75,8 @@ void sort_array_insert(int* x, const int n) {
             comparisions++;
         }
         x[j + 1] = key;
+        movements++;
+
         std::cout << "Шаг: " << i << "/" << n << "\r";
     }
 
@@ -223,5 +226,5 @@ int main()
     //complex_test_insert(); //Создаёт случайные массивы разной длины и сортирует их вставкой. Выводит статистику. (скорее всего не нужно)
 
     ////Комплексный тест двух сортировок на одинаковых исходных данных (2.2)
-    //complex_test_both();
+    complex_test_both();
 }
