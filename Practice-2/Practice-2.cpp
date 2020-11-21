@@ -30,13 +30,13 @@ void out_array(int* x, int n) {
 void sort_array_select(int* x, const int n) {
     std::cout << "\nСортировка выбором" << endl;
     int min, temp;
-    unsigned long long comparisions = 0, movements = 0;
+    unsigned long long comparisons = 0, movements = 0;
     
     for (int i = 0; i < n - 1; i++) {
         min = i;
 
         for (int j = i + 1; j < n; j++) {
-            comparisions++;
+            comparisons++;
             if (x[j] < x[min]) {
                 min = j;
             }
@@ -47,12 +47,12 @@ void sort_array_select(int* x, const int n) {
         temp = x[i];
         x[i] = x[min];
         x[min] = temp;
-        movements++;
+      movements++;
 
-        std::cout << "Шаг: " << i << "/" << n << "\r";
+        //std::cout << "Шаг: " << i << "/" << n << "\r";
     }
     std::cout << "Массив из " << n << " элементов отсортирован." << endl;
-    std::cout << "Количество сравнений: " << comparisions << endl;
+    std::cout << "Количество сравнений: " << comparisons << endl;
     std::cout << "Количество перемещений: " << movements << endl;
 }
 
@@ -60,28 +60,55 @@ void sort_array_select(int* x, const int n) {
 void sort_array_insert(int* x, const int n) {
     std::cout << "\nСортировка вставками" << endl;
     int i, key, j;
-    unsigned long long comparisions = 0, movements = 0;
+    unsigned long long comparisons = 0, movements = 0;
     for (i = 1; i < n; i++)
     {
         key = x[i];
         movements++;
         j = i - 1;
 
+        if (!(j >= 0 && x[j] > key))
+            comparisons++;
         while (j >= 0 && x[j] > key)
         {
             x[j + 1] = x[j];
             j = j - 1;
             movements++;
-            comparisions++;
+            comparisons++;
         }
         x[j + 1] = key;
-        movements++;
+       movements++;
 
         std::cout << "Шаг: " << i << "/" << n << "\r";
     }
 
     std::cout << "Массив из " << n << " элементов отсортирован." << endl;
-    std::cout << "Количество сравнений: " << comparisions << endl;
+    std::cout << "Количество сравнений: " << comparisons << endl;
+    std::cout << "Количество перемещений: " << movements << endl;
+}
+
+// Функция сортировки прямым обменом (метод "пузырька")
+void bubble_sort(int* arr, int n)
+{
+    std::cout << "\nСортировка простыми обменами" << endl;
+    // Для всех элементов
+    unsigned long long movements = 0, comparisons = 0;
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = (n - 1); j > i; j--) // для всех элементов после i-ого
+        {
+            comparisons++;
+            if (arr[j - 1] > arr[j]) // если текущий элемент меньше предыдущего
+            {
+                int temp = arr[j - 1]; // меняем их местами
+                arr[j - 1] = arr[j];
+                arr[j] = temp;
+                movements++;
+            }
+        }
+    }
+    std::cout << "Массив из " << n << " элементов отсортирован." << endl;
+    std::cout << "Количество сравнений: " << comparisons << endl;
     std::cout << "Количество перемещений: " << movements << endl;
 }
 
@@ -144,7 +171,7 @@ void just_sort_insert() {
     out_array(x, n); //Вывод
 }
 
-void sort_select_and_insert() {
+void sort_select_and_insert_and_bubble() {
     int n;
     int* x = new int[1000];
     input_array(x, n); //Ввод первого массива
@@ -152,13 +179,28 @@ void sort_select_and_insert() {
     int* y = new int[1000];
     for (int i = 0; i < n; i++) //Копирование первого массива во второй
         y[i] = x[i];
+    int* z = new int[1000];
+    for (int i = 0; i < n; i++) //Копирование первого массива во третий
+        z[i] = x[i];
+    //Сортируем массивы с замером количества операций и времени выполнения.
 
-    //Сортируем массивы с замером количества операций
-    sort_array_select(x, n); 
-    sort_array_insert(y, n); 
-
+    Timer t1;
+    sort_array_select(x, n);
+    std::cout << "Прошло времени: " << t1.elapsed() << endl;
+    std::cout << endl;
     delete[] x;
+	
+    Timer t2;
+    sort_array_insert(y, n);
+    std::cout << "Прошло времени: " << t2.elapsed() << endl;
+    std::cout << endl;
     delete[] y;
+
+    Timer t3;
+    bubble_sort(z, n);
+    std::cout << "Прошло времени: " << t3.elapsed() << endl;
+    std::cout << endl;
+    delete[] z;
 }
 
 void complex_test_select() {
@@ -220,11 +262,11 @@ int main()
     //just_sort_insert(); //Сортировка вставками (ручной ввод значений) (скорее всего не нужно)
 
     //Возможно, задание 2.2
-    //sort_select_and_insert(); //Сортировки одинаковых массивов выбором и вставкой и замер количества операций и перемещений (ручной ввод)
+    sort_select_and_insert_and_bubble(); //Сортировки одинаковых массивов выбором и вставкой и замер количества операций и перемещений (ручной ввод)
 
     //complex_test_select(); //Создаёт случайные массивы разной длины и сортирует их выбором. Выводит статистику. (1.2)
     //complex_test_insert(); //Создаёт случайные массивы разной длины и сортирует их вставкой. Выводит статистику. (скорее всего не нужно)
 
     ////Комплексный тест двух сортировок на одинаковых исходных данных (2.2)
-    complex_test_both();
+    //complex_test_both();
 }
